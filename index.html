@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Art Connects Prototype</title>
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <style type="text/css">
+  </style>
+  <script>
+    // Inspired by hyperscript, with no dependencies and a bit simpler
+    function z() {
+      var a = arguments[0];
+      var m = a.split(/(?=[\.#])/g);
+      var e = document.createElement(m[0]);
+      m.slice(1).forEach(function(i) {
+        let term = i.substring(1);
+        if (i[0] === '.') {
+          e.className += ' ' + term;
+        } else if (i[0] === '#') {
+          e.setAttribute('id', term);
+        }
+      });
+      for (var i = 1; i < arguments.length; i++) {
+        let a = arguments[i];
+        if (typeof a === 'string') {
+          e.appendChild(document.createTextNode(a));
+        } else if (a instanceof Array) {
+          for (let j = 0; j < a.length; j++) {
+            if (typeof a[j] !== 'undefined') {
+              e.appendChild(a[j]);
+            }
+          }
+        } else if (a instanceof HTMLElement) {
+          e.appendChild(a);
+        } else if (a instanceof Object) {
+          for (let key in a) {
+            if (a.hasOwnProperty(key)) {
+              if (key == 'data') {
+                for (let d in a[key]) {
+                  e.dataset[d] = a[key][d];
+                }
+              } else {
+                e.setAttribute(key, a[key]);
+              }
+            }
+          }
+        }
+      }
+      return e;
+    }
+
+    function timeSince(date) {
+      let seconds = Math.floor((new Date()) / 1000 - date);
+      let intervals = [
+        [31536000, "year"],
+        [2592000, "month"],
+        [86400, "day"],
+        [3600, "hour"],
+        [60, "minute"],
+        [1, "second"],
+      ];
+      for (let _i in intervals) {
+        let i = intervals[_i];
+        let interval = Math.floor(seconds / i[0]);
+        if (interval >= 1 || i[0] == 1) {
+          return interval + " " + i[1] + (interval > 1 ? "s" : "");
+        }
+      }
+    }
+
+    $(document).ready(function() {});
+  </script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/paper.js/0.12.0/paper-full.js"></script>
+  <script type="text/paperscript" canvas="my-canvas">
+    var path = new Path();
+  	path.strokeColor = 'black';
+  	var start = new Point(100, 100);
+  	path.moveTo(start);
+  	path.lineTo(start + [ 100, -50 ]);
+
+    // TODO:
+    //  Prototype a masked circle with a frame for several pictures
+    //  Make nice arrows that lead from one to another
+    //  Make it so you can click and it loads from a fake web source
+    //  Some sort of timeline view where you can scroll around and see links
+
+    var raster = new Raster('zack');
+    raster.position = view.center;
+    raster.scale(0.5);
+    raster.rotate(45);
+
+    function onFrame(event) {
+      // Each frame, rotate the path by 3 degrees:
+      raster.rotate(3);
+    }
+  </script>
+
+</head>
+
+<body id="main" class="container">
+  <canvas id="my-canvas"></canvas>
+  <image id="zack" src="zack.jpg" class="d-none"></image>
+</body>
+
+</html>
